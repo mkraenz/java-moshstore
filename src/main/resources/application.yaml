@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: moshstore
+  datasource:
+    url: jdbc:mysql://172.17.0.1:3306/moshstore?createDatabaseIfNotExist=true
+    username: root
+    password: pass
+stripe:
+  apiUrl: https://api.stripe.com
+  enabled: true
+  timeout: 1000
+  supported-currencies: USD,EUR,GBP
+paymentProvider: paypal
+smtp:
+  port: 465
+  host: smtp.example.com

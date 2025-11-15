@@ -1,0 +1,21 @@
+services:
+  db:
+    container_name: moshstoremysql
+    restart: always
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3306:3306
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+volumes:
+  mysqldata:
