@@ -2,12 +2,14 @@ package eu.kraenz.moshstore;
 
 import eu.kraenz.moshstore.entities.Address;
 import eu.kraenz.moshstore.entities.User;
+import eu.kraenz.moshstore.projections.UserSummary;
 import eu.kraenz.moshstore.repositories.AddressRepository;
 import eu.kraenz.moshstore.repositories.ProductRepository;
 import eu.kraenz.moshstore.repositories.ProfileRepository;
 import eu.kraenz.moshstore.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +65,24 @@ public class UserService {
     User user = userRepository.findById(5L).orElseThrow();
     productRepository.findAll().forEach(user.getWishlist()::add);
     userRepository.save(user);
+  }
+
+  @Transactional
+  public void fetchUser() {
+    User user = userRepository.findByEmail("hello2@example.com").orElseThrow();
+    System.out.println(user);
+  }
+
+  public void fetchAllWithAddresses() {
+    List<User> users = userRepository.findAllWithAddresses();
+    users.forEach(System.out::println);
+  }
+
+  @Transactional
+  public void exerciseNineSeven() {
+    List<UserSummary> users = userRepository.findByLoyaltyPointsGreaterThan(10);
+    users.forEach(u -> System.out.println(u.getId() + " " + u.getEmail()));
+    //    profiles.forEach(p -> System.out.println(p.getUser()));
+    //      userRepository.findBaseData();
   }
 }

@@ -12,7 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -78,5 +77,20 @@ public class User {
   public void addProfile(Profile profile) {
     this.setProfile(profile);
     profile.setUser(this);
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName()
+        + "("
+        + "id = "
+        + id
+        + ", "
+        + "name = "
+        + name
+        + ", "
+        + "email = "
+        + email
+        + ")";
   }
 }

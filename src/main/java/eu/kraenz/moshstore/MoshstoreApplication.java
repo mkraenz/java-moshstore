@@ -16,7 +16,11 @@ public class MoshstoreApplication {
     //    users.deleteById(1L);
     var userSvc = ctx.getBean(UserService.class);
     var productService = ctx.getBean(ProductService.class);
-    productService.delete(1L);
+    //    productService.delete(1L);
     //    userSvc.wishlistAllProducts();
+    //    productService.updatePrice();
+    //    productService.fetchProducts();
+    //    userSvc.fetchUser();
+    userSvc.exerciseNineSeven();
   }
 }

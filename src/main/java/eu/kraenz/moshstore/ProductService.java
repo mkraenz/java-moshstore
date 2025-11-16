@@ -26,4 +26,15 @@ class ProductService {
   public void delete(long id) {
     productRepository.deleteById(id);
   }
+
+  @Transactional
+  public void updatePrice() {
+    productRepository.updatePriceByCategory(BigDecimal.valueOf(10), (byte) 1);
+  }
+
+  public void fetchProducts() {
+    var products =
+        productRepository.findByCategory(Category.builder().id((byte) 1).build());
+    products.forEach(System.out::println);
+  }
 }
