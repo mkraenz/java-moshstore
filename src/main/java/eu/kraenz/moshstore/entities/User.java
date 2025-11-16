@@ -1,12 +1,11 @@
 package eu.kraenz.moshstore.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.*;
 
 @Getter
 @Setter
@@ -31,9 +30,15 @@ public class User {
   @Column(nullable = false, name = "password")
   private String password;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(
+      mappedBy = "user",
+      cascade = {
+        CascadeType.PERSIST,
+        CascadeType.REMOVE,
+      },
+      orphanRemoval = true)
   @Builder.Default
-  private List<Address> addresses = new ArrayList();
+  private List<Address> addresses = new ArrayList<>();
 
   @ManyToMany
   @JoinTable(
@@ -41,7 +46,18 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @Builder.Default
-  private Set<Tag> tags = new HashSet();
+  private Set<Tag> tags = new HashSet<>();
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+  private Profile profile;
+
+  @ManyToMany()
+  @JoinTable(
+      name = "wishlist",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "product_id"))
+  @Builder.Default
+  private Set<Product> wishlist = new HashSet<>();
 
   public void addAddress(Address address) {
     addresses.add(address);
@@ -59,10 +75,8 @@ public class User {
     theTag.getUsers().add(this);
   }
 
-  @OneToOne(mappedBy = "user") private Profile profile;
-
-    public void addProfile(Profile profile) {
-        this.setProfile(profile);
-        profile.setUser(this);
-    }
+  public void addProfile(Profile profile) {
+    this.setProfile(profile);
+    profile.setUser(this);
+  }
 }

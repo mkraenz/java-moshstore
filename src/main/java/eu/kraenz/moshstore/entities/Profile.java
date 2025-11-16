@@ -1,9 +1,8 @@
 package eu.kraenz.moshstore.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
+import lombok.*;
 
 @Getter
 @Setter
@@ -30,9 +29,9 @@ public class Profile {
   @Column(name = "loyalty_points", nullable = false)
   private Integer loyaltyPoints;
 
-  @OneToOne
-  // profile and user have identical IDs
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id")
+  // profile and user have identical IDs
   @MapsId
   @ToString.Exclude
   private User user;
