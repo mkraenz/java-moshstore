@@ -3,6 +3,7 @@ package eu.kraenz.moshstore;
 import eu.kraenz.moshstore.entities.Address;
 import eu.kraenz.moshstore.entities.User;
 import eu.kraenz.moshstore.repositories.AddressRepository;
+import eu.kraenz.moshstore.repositories.ProductRepository;
 import eu.kraenz.moshstore.repositories.ProfileRepository;
 import eu.kraenz.moshstore.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -17,6 +18,7 @@ public class UserService {
   private final EntityManager entityManager;
   private final ProfileRepository profileRepository;
   private final AddressRepository addressRepository;
+  private final ProductRepository productRepository;
 
   @Transactional
   public void showEntityStates() {
@@ -53,6 +55,13 @@ public class UserService {
     User user = userRepository.findById(5L).orElseThrow();
     var address = user.getAddresses().getFirst();
     user.removeAddress(address);
+    userRepository.save(user);
+  }
+
+  @Transactional
+  public void wishlistAllProducts() {
+    User user = userRepository.findById(5L).orElseThrow();
+    productRepository.findAll().forEach(user.getWishlist()::add);
     userRepository.save(user);
   }
 }

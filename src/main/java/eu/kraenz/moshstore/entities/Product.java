@@ -2,12 +2,14 @@ package eu.kraenz.moshstore.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "products", schema = "moshstore")
 public class Product {
   @Id
@@ -21,7 +23,7 @@ public class Product {
   @Column(name = "price")
   private BigDecimal price;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "category_id")
   private Category category;
 }
