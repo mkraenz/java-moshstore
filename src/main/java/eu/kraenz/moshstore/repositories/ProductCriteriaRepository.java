@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ProductCriteriaRepository {
   List<Product> findProductByCriteria(String name, BigDecimal minPrice, BigDecimal maxPrice);
+
+  List<Product> findByCategoryName(String categoryName);
 }

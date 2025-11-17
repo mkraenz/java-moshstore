@@ -26,4 +26,12 @@ public class Product {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "category_id")
   private Category category;
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "name = " + name + ", " +
+                "price = " + price + ")";
+    }
 }

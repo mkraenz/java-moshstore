@@ -21,6 +21,7 @@ public class MoshstoreApplication {
     //    productService.updatePrice();
     //    productService.fetchProducts();
     //    userSvc.fetchUser();
-    productService.fetchProductsByCriteria();
+    //    productService.fetchProductsBySpecs("Black", null, null);
+    productService.findByCategory();
   }
 }
