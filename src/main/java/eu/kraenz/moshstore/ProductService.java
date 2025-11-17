@@ -7,6 +7,8 @@ import eu.kraenz.moshstore.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -33,8 +35,19 @@ class ProductService {
   }
 
   public void fetchProducts() {
+    var product = new Product();
+    product.setName("Black Tea");
+    ExampleMatcher matcher =
+        ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+    var example = Example.of(product, matcher);
+    var products = productRepository.findAll(example);
+    products.forEach(System.out::println);
+  }
+
+  public void fetchProductsByCriteria() {
     var products =
-        productRepository.findByCategory(Category.builder().id((byte) 1).build());
+        productRepository.findProductByCriteria(
+            "Black Tea", BigDecimal.valueOf(1), BigDecimal.valueOf(15));
     products.forEach(System.out::println);
   }
 }

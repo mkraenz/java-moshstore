@@ -21,6 +21,6 @@ public class MoshstoreApplication {
     //    productService.updatePrice();
     //    productService.fetchProducts();
     //    userSvc.fetchUser();
-    userSvc.exerciseNineSeven();
+    productService.fetchProductsByCriteria();
   }
 }

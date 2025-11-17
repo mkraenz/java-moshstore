@@ -5,12 +5,12 @@ import eu.kraenz.moshstore.entities.Product;
 import eu.kraenz.moshstore.projections.ProductSummary;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface ProductRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductCriteriaRepository {
   List<Product> findByName(String name);
 
   List<Product> findByNameNotLike(String name);
