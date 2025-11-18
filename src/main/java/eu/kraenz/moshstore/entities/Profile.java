@@ -1,15 +1,16 @@
 package eu.kraenz.moshstore.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import lombok.*;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Getter
+@Setter
 @Entity
 @Table(name = "profiles")
 public class Profile {
@@ -26,13 +27,11 @@ public class Profile {
   @Column(name = "date_of_birth")
   private LocalDate dateOfBirth;
 
-  @Column(name = "loyalty_points", nullable = false)
+  @Column(name = "loyalty_points")
   private Integer loyaltyPoints;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id")
-  // profile and user have identical IDs
   @MapsId
-  @ToString.Exclude
   private User user;
 }

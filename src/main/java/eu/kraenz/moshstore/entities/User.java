@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,43 +20,29 @@ public class User {
   @Column(name = "id")
   private Long id;
 
-  @Column(nullable = false, name = "name")
+  @Column(name = "name")
   private String name;
 
-  @Column(nullable = false, name = "email")
+  @Column(name = "email")
   private String email;
 
-  @Column(nullable = false, name = "password")
+  @Column(name = "password")
   private String password;
 
   @OneToMany(
       mappedBy = "user",
-      cascade = {
-        CascadeType.PERSIST,
-        CascadeType.REMOVE,
-      },
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @Builder.Default
   private List<Address> addresses = new ArrayList<>();
-
-  @ManyToMany
-  @JoinTable(
-      name = "users_tags",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @Builder.Default
-  private Set<Tag> tags = new HashSet<>();
-
   @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
   private Profile profile;
-
-  @ManyToMany(cascade = {CascadeType.REMOVE})
+  @ManyToMany
   @JoinTable(
       name = "wishlist",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "product_id"))
-  @Builder.Default
-  private Set<Product> wishlist = new HashSet<>();
+  private Set<Product> favoriteProducts = new HashSet<>();
 
   public void addAddress(Address address) {
     addresses.add(address);
@@ -68,15 +54,8 @@ public class User {
     address.setUser(null);
   }
 
-  public void addTag(String tag) {
-    var theTag = new Tag(tag);
-    tags.add(theTag);
-    theTag.getUsers().add(this);
-  }
-
-  public void addProfile(Profile profile) {
-    this.setProfile(profile);
-    profile.setUser(this);
+  public void addFavoriteProduct(Product product) {
+    favoriteProducts.add(product);
   }
 
   @Override

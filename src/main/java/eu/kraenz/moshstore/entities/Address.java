@@ -3,12 +3,12 @@ package eu.kraenz.moshstore.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Getter
+@Setter
 @Entity
 @Table(name = "addresses")
 public class Address {
@@ -17,16 +17,16 @@ public class Address {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "street", nullable = false)
+  @Column(name = "street")
   private String street;
 
-  @Column(name = "city", nullable = false)
+  @Column(name = "city")
   private String city;
 
-  @Column(name = "zip", nullable = false)
+  @Column(name = "zip")
   private String zip;
 
-  @Column(name = "state", nullable = true)
+  @Column(name = "state")
   private String state;
 
   @ManyToOne(fetch = FetchType.LAZY)

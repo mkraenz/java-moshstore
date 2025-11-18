@@ -6,32 +6,27 @@ import lombok.*;
 
 @Getter
 @Setter
-@Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "products", schema = "moshstore")
+@NoArgsConstructor
+@Entity
+@Table(name = "products")
 public class Product {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "name")
-  private String name;
+    @Column(name = "name")
+    private String name;
 
-  @Column(name = "price")
-  private BigDecimal price;
+    @Column(name = "description")
+    private String description;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "category_id")
-  private Category category;
+    @Column(name = "price")
+    private BigDecimal price;
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "name = " + name + ", " +
-                "price = " + price + ")";
-    }
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

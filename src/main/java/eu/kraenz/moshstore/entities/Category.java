@@ -1,17 +1,17 @@
 package eu.kraenz.moshstore.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Set;
-import lombok.*;
 
 @Getter
 @Setter
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString
+@Entity
 @Table(name = "categories")
 public class Category {
   @Id
@@ -23,7 +23,13 @@ public class Category {
   private String name;
 
   @OneToMany(mappedBy = "category")
-  @Builder.Default
-  @ToString.Exclude
   private Set<Product> products = new HashSet<>();
+
+  public Category(String name) {
+    this.name = name;
+  }
+
+  public Category(byte id) {
+    this.id = id;
+  }
 }

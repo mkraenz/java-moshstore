@@ -1,0 +1,38 @@
+@url = http://localhost:8080
+
+###
+GET {{url}}/dev/seed
+
+###
+
+GET {{url}}/users
+
+###
+GET {{url}}/users/2
+
+###
+GET {{url}}/users/seed
+
+###
+GET {{url}}/
+
+###
+
+GET {{url}}/users
+x-auth-Token: 1234
+
+###
+GET {{url}}/products?categoryId=1
+
+###
+GET {{url}}/products/1
+
+###
+POST {{url}}/users
+Content-Type: application/json
+
+{
+  "email": "hello@example.com",
+  "name": "jack",
+  "password": "pw1234"
+}
