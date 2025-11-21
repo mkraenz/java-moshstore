@@ -33,6 +33,27 @@ Content-Type: application/json
 
 {
   "email": "hello@example.com",
-  "name": "jack",
+  "name": "asd",
   "password": "pw1234"
+}
+
+###
+PUT {{url}}/users/100
+Content-Type: application/json
+
+{
+  "email": "joe@example.com",
+  "name": "Joe"
+}
+
+###
+DELETE {{url}}/users/1
+
+###
+POST {{url}}/users/4/change-password
+Content-Type: application/json
+
+{
+  "oldPassword": "pw1234",
+  "newPassword": "5678"
 }

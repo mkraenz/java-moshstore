@@ -1,14 +1,11 @@
 package eu.kraenz.moshstore.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
-@Getter
-public class ProductDto {
-  private Long id;
+@Data
+public class CreateProductDto {
   private String name;
   private String description;
   private BigDecimal price;

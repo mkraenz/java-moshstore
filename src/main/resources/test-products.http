@@ -1,0 +1,26 @@
+@url = http://localhost:8080
+
+###
+POST {{url}}/products
+Content-Type: application/json
+
+{
+  "name": "Bike shed",
+  "categoryId": 1,
+  "description": "Talk about it. It's much nicer than discussing this complicated stuff about security of the nuclear power plant.",
+  "price": 190.99
+}
+
+###
+PUT {{url}}/products/7
+Content-Type: application/json
+
+{
+  "name": "A Bike shed",
+  "categoryId": 3,
+  "description": "Go talk about it. It's much nicer than discussing this complicated security stuff of a nuclear power plant.",
+  "price": 195.00
+}
+
+###
+DELETE {{url}}/products/6
