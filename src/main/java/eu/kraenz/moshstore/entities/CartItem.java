@@ -3,6 +3,8 @@ package eu.kraenz.moshstore.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -26,4 +28,8 @@ public class CartItem {
   @ManyToOne
   @JoinColumn(name = "product_id", nullable = false)
   private Product product;
+
+  public BigDecimal getTotalPrice() {
+    return this.getProduct().getPrice().multiply(BigDecimal.valueOf(this.getQuantity()));
+  }
 }
