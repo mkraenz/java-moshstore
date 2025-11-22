@@ -9,6 +9,10 @@ import eu.kraenz.moshstore.exceptions.CartNotFound;
 import eu.kraenz.moshstore.exceptions.ProductNotFound;
 import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.services.CartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.UUID;
@@ -20,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/carts")
+@Tag(name = "Carts")
 public class CartController {
   private final CartService cartService;
 
@@ -30,6 +35,7 @@ public class CartController {
   }
 
   @PostMapping
+  @Operation(summary = "Create an empty cart.")
   public ResponseEntity<CartDto> create(UriComponentsBuilder uriBuilder) {
     var cart = cartService.create();
     var uri = uriBuilder.path("/carts/{id}").buildAndExpand(cart).toUri();
@@ -37,8 +43,10 @@ public class CartController {
   }
 
   @PostMapping("{id}/items")
+  @Operation(summary = "Add a product to a cart.")
   public ResponseEntity<?> addItem(
-      @PathVariable("id") UUID id, @Valid @RequestBody AddProductToCartDto inputDto) {
+      @Parameter(description = "The ID of the cart.") @PathVariable("id") UUID id,
+      @Valid @RequestBody AddProductToCartDto inputDto) {
     try {
       var item = cartService.addToCart(id, inputDto.getProductId());
       return ResponseEntity.ok(item);

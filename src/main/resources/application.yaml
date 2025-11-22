@@ -7,3 +7,8 @@ spring:
     password: pass
   jpa:
     show-sql: true
+
+springdoc:
+  swagger-ui:
+    # open at http://localhost:8080/docs
+    path: /docs
