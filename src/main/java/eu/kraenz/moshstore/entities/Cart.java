@@ -43,11 +43,11 @@ public class Cart {
     return this.getItems().stream().filter(i -> i.getProduct().getId() == productId).findFirst();
   }
 
-  public CartItem findItemOrNull(Long productId) {
-    return findItem(productId).orElse(null);
-  }
-
   public void clear() {
     getItems().clear();
+  }
+
+  public void removeItem(CartItem item) {
+    items.remove(item);
   }
 }

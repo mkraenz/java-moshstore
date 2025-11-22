@@ -8,15 +8,15 @@ POST {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items
 Content-Type: application/json
 
 {
-  "productId": 2
+  "productId": 1
 }
 
 ###
-PUT {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/1
+PUT {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/2
 Content-Type: application/json
 
 {
-  "quantity": 4
+  "quantity": 2
 }
 
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 GET {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5
 
 ###
-DELETE {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/1
+DELETE {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/2
 
 ###
 
