@@ -1,0 +1,15 @@
+@url = http://localhost:8080
+
+###
+POST {{url}}/carts
+
+###
+POST {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items
+Content-Type: application/json
+
+{
+  "productId": 1
+}
+
+###
+DELETE {{url}}/carts/1
