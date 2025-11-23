@@ -28,16 +28,23 @@ class JwtService {
 
   public boolean isValid(String token) {
     try {
-      var payload =
-          Jwts.parser()
-              .verifyWith(Keys.hmacShaKeyFor(signingSecret.getBytes()))
-              .build()
-              .parseSignedClaims(token)
-              .getPayload();
-      return payload.getExpiration().after(new Date());
+      var claims = parseClaims(token);
+      return claims.getExpiration().after(new Date());
     } catch (JwtException e) {
       // token invalid
       return false;
     }
+  }
+
+  private Claims parseClaims(String token) {
+    return Jwts.parser()
+        .verifyWith(Keys.hmacShaKeyFor(signingSecret.getBytes()))
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
+  }
+
+  public String getEmail(String token) {
+    return parseClaims(token).getSubject();
   }
 }
