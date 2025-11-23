@@ -1,6 +1,5 @@
 package eu.kraenz.moshstore.auth;
 
-import eu.kraenz.moshstore.entities.Role;
 import eu.kraenz.moshstore.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -14,33 +13,33 @@ import org.springframework.stereotype.Service;
 class JwtService {
   private final JwtConfig config;
 
-  public String generateAccessToken(User user) {
+  public Jwt generateAccessToken(User user) {
     return generateToken(user, config.getAccessTokenExpiration());
   }
 
-  public String generateRefreshToken(User user) {
+  public Jwt generateRefreshToken(User user) {
     return generateToken(user, config.getRefreshTokenExpiration());
   }
 
-  private String generateToken(User user, long tokenExpirationInSeconds) {
-    return Jwts.builder()
-        .subject(String.valueOf(user.getId()))
-        .claim("email", user.getEmail())
-        .claim("name", user.getName())
-        .claim("role", user.getRole())
-        .issuedAt(new Date())
-        .expiration(new Date(System.currentTimeMillis() + tokenExpirationInSeconds * 1000))
-        .signWith(config.getSecretKey())
-        .compact();
+  private Jwt generateToken(User user, long tokenExpirationInSeconds) {
+    var claims =
+        Jwts.claims()
+            .subject(String.valueOf(user.getId()))
+            .add("email", user.getEmail())
+            .add("name", user.getName())
+            .add("role", user.getRole())
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + tokenExpirationInSeconds * 1000))
+            .build();
+    return new Jwt(claims, config.getSecretKey());
   }
 
-  public boolean isValid(String token) {
+  public Jwt parse(String token) {
     try {
       var claims = parseClaims(token);
-      return claims.getExpiration().after(new Date());
+      return new Jwt(claims, config.getSecretKey());
     } catch (JwtException e) {
-      // token invalid
-      return false;
+      return null;
     }
   }
 
@@ -50,13 +49,5 @@ class JwtService {
         .build()
         .parseSignedClaims(token)
         .getPayload();
-  }
-
-  public Long getUserId(String token) {
-    return Long.valueOf(parseClaims(token).getSubject());
-  }
-
-  public Role getRole(String token) {
-    return Role.valueOf(parseClaims(token).get("role", String.class));
   }
 }

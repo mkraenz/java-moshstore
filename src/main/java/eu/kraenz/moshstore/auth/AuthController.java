@@ -36,9 +36,9 @@ class AuthController {
     var token = jwtService.generateAccessToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
 
-    response.addCookie(createRefreshTokenCookie(refreshToken));
+    response.addCookie(createRefreshTokenCookie(refreshToken.toString()));
 
-    return ResponseEntity.ok(new JwtResponseDto(token));
+    return ResponseEntity.ok(new JwtResponseDto(token.toString()));
   }
 
   private Cookie createRefreshTokenCookie(String refreshToken) {
@@ -53,13 +53,21 @@ class AuthController {
   @PostMapping("/refresh")
   private ResponseEntity<JwtResponseDto> refreshAccessToken(
       @CookieValue("refreshToken") String refreshToken) {
-    if (!jwtService.isValid(refreshToken)) {
+    var jwt = jwtService.parse(refreshToken);
+    if (jwt == null || !jwt.isValid()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-    var userId = jwtService.getUserId(refreshToken);
-    var user = userRepository.findById(userId).orElseThrow();
+    var user = userRepository.findById(jwt.getUserId()).orElseThrow();
     var accessToken = jwtService.generateAccessToken(user);
-    return ResponseEntity.ok(new JwtResponseDto(accessToken));
+    return ResponseEntity.ok(new JwtResponseDto(accessToken.toString()));
+  }
+
+  @PostMapping("/logout")
+  private ResponseEntity<Void> logOut(HttpServletResponse response) {
+    var cookie = createRefreshTokenCookie("irrelevant");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/me")

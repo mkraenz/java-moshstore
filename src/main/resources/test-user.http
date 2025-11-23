@@ -48,11 +48,15 @@ Content-Type: application/json
 
 ###
 GET {{url}}/admin/hello
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNCIsImVtYWlsIjoiMTEyMy0xNzE2QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzkxNTQzMCwiZXhwIjoxNzYzOTQ1NDMwfQ.gZo7_C0nB0lDqwRSsk5ZrzzkKopwBSjgiY22DA8y870
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNCIsImVtYWlsIjoiMTEyMy0xNzE2QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzkxNzE5NSwiZXhwIjoxNzYzOTQ3MTk1fQ.Kd_p_fBf4dA8I9In-4U7jUpwoqJGazRiKpCNUsCtmB4
 
 
 ###
 POST {{url}}/auth/refresh
+
+###
+POST {{url}}/auth/logout
+
 
 ###
 GET {{url}}/auth/me
