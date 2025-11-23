@@ -4,21 +4,16 @@ import eu.kraenz.moshstore.dtos.ChangePasswordDto;
 import eu.kraenz.moshstore.dtos.CreateUserDto;
 import eu.kraenz.moshstore.dtos.UpdateUserDto;
 import eu.kraenz.moshstore.dtos.UserDto;
-import eu.kraenz.moshstore.entities.User;
 import eu.kraenz.moshstore.mappers.UserMapper;
 import eu.kraenz.moshstore.repositories.UserRepository;
-
-import java.util.HashMap;
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Set;
-
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -28,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 class UserController {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping
   public Iterable<UserDto> findAll(
@@ -54,10 +50,11 @@ class UserController {
           .body(Map.of("email", "User by this email already exists."));
     }
     var user = userMapper.toEntity(data);
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     userRepository.save(user);
-    var createdUserDto = userMapper.toDto(user);
-    var uri = uriBuilder.path("/users/{id}").buildAndExpand(createdUserDto.getId()).toUri();
-    return ResponseEntity.created(uri).body(createdUserDto);
+    var dto = userMapper.toDto(user);
+    var uri = uriBuilder.path("/users/{id}").buildAndExpand(dto.getId()).toUri();
+    return ResponseEntity.created(uri).body(dto);
   }
 
   @PutMapping("/{id}")

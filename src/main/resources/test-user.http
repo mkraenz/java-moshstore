@@ -32,8 +32,17 @@ POST {{url}}/users
 Content-Type: application/json
 
 {
-  "email": "hello@example.com",
+  "email": "1123-1018@example.com",
   "name": "asd",
+  "password": "pw1234"
+}
+
+###
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "1123-1018@example.com",
   "password": "pw1234"
 }
 

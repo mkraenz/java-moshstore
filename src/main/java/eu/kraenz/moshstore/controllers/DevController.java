@@ -1,5 +1,6 @@
 package eu.kraenz.moshstore.controllers;
 
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import eu.kraenz.moshstore.entities.Category;
 import eu.kraenz.moshstore.entities.Product;
 import eu.kraenz.moshstore.entities.User;
@@ -8,6 +9,7 @@ import eu.kraenz.moshstore.repositories.ProductRepository;
 import eu.kraenz.moshstore.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
 
@@ -27,6 +29,7 @@ class DevController {
   private final UserRepository userRepository;
   private final CategoryRepository categoryRepository;
   private final ProductRepository productRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping("/seed")
   @Transactional
@@ -47,7 +50,7 @@ class DevController {
                     User.builder()
                         .email((String) user.get("email"))
                         .name((String) user.get("name"))
-                        .password(String.valueOf(Math.random()))
+                        .password(passwordEncoder.encode(String.valueOf(Math.random())))
                         .build());
     userRepository.saveAll(users.toList());
 
