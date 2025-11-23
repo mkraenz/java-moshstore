@@ -4,9 +4,12 @@ import eu.kraenz.moshstore.dtos.UserDto;
 import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.mappers.UserMapper;
 import eu.kraenz.moshstore.repositories.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,20 +25,41 @@ class AuthController {
   private final JwtService jwtService;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final JwtConfig jwtConfig;
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponseDto> logIn(@Valid @RequestBody LoginDto inputDto) {
+  public ResponseEntity<JwtResponseDto> logIn(
+      @Valid @RequestBody LoginDto inputDto, HttpServletResponse response) {
     authManager.authenticate(
         new UsernamePasswordAuthenticationToken(inputDto.getEmail(), inputDto.getPassword()));
     var user = userRepository.findByEmail(inputDto.getEmail()).orElseThrow();
-    var token = jwtService.generateToken(user.getId(), user.getEmail(), user.getName());
+    var token = jwtService.generateAccessToken(user);
+    var refreshToken = jwtService.generateRefreshToken(user);
+
+    response.addCookie(createRefreshTokenCookie(refreshToken));
+
     return ResponseEntity.ok(new JwtResponseDto(token));
   }
 
-  @PostMapping("/validate")
-  public boolean validate(@RequestHeader("Authorization") String authHeader) {
-    var token = authHeader.replace("Bearer ", "");
-    return jwtService.isValid(token);
+  private Cookie createRefreshTokenCookie(String refreshToken) {
+    var cookie = new Cookie("refreshToken", refreshToken);
+    cookie.setHttpOnly(true);
+    cookie.setPath("/auth/refresh");
+    cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
+    cookie.setSecure(true);
+    return cookie;
+  }
+
+  @PostMapping("/refresh")
+  private ResponseEntity<JwtResponseDto> refreshAccessToken(
+      @CookieValue("refreshToken") String refreshToken) {
+    if (!jwtService.isValid(refreshToken)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    var userId = jwtService.getUserId(refreshToken);
+    var user = userRepository.findById(userId).orElseThrow();
+    var accessToken = jwtService.generateAccessToken(user);
+    return ResponseEntity.ok(new JwtResponseDto(accessToken));
   }
 
   @GetMapping("/me")

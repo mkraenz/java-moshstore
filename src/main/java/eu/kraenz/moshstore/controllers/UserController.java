@@ -4,6 +4,7 @@ import eu.kraenz.moshstore.dtos.ChangePasswordDto;
 import eu.kraenz.moshstore.dtos.CreateUserDto;
 import eu.kraenz.moshstore.dtos.UpdateUserDto;
 import eu.kraenz.moshstore.dtos.UserDto;
+import eu.kraenz.moshstore.entities.Role;
 import eu.kraenz.moshstore.mappers.UserMapper;
 import eu.kraenz.moshstore.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -51,6 +52,7 @@ class UserController {
     }
     var user = userMapper.toEntity(data);
     user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setRole(Role.USER);
     userRepository.save(user);
     var dto = userMapper.toDto(user);
     var uri = uriBuilder.path("/users/{id}").buildAndExpand(dto.getId()).toUri();

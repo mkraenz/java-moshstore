@@ -32,7 +32,7 @@ POST {{url}}/users
 Content-Type: application/json
 
 {
-  "email": "1123-1018@example.com",
+  "email": "1123-1716@example.com",
   "name": "asd",
   "password": "pw1234"
 }
@@ -42,17 +42,21 @@ POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "1123-1018@example.com",
+  "email": "1123-1716@example.com",
   "password": "pw1234"
 }
 
 ###
-POST {{url}}/auth/validate
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMyIsImVtYWlsIjoiMTEyMy0xMDE4QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsImlhdCI6MTc2MzkwODQ0NiwiZXhwIjoxNzYzOTk0ODQ2fQ.LnGFhZ_f9zuhnzV4km-oRv8wcAKHQvb-cgPJ8ftLTUE
+GET {{url}}/admin/hello
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNCIsImVtYWlsIjoiMTEyMy0xNzE2QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzkxNTQzMCwiZXhwIjoxNzYzOTQ1NDMwfQ.gZo7_C0nB0lDqwRSsk5ZrzzkKopwBSjgiY22DA8y870
+
+
+###
+POST {{url}}/auth/refresh
 
 ###
 GET {{url}}/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMyIsImVtYWlsIjoiMTEyMy0xMDE4QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsImlhdCI6MTc2MzkwODQ0NiwiZXhwIjoxNzYzOTk0ODQ2fQ.LnGFhZ_f9zuhnzV4km-oRv8wcAKHQvb-cgPJ8ftLTUE
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMyIsImVtYWlsIjoiMTEyMy0xMDE4QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsImlhdCI6MTc2MzkxMjc5MSwiZXhwIjoxNzYzOTEzMDkxfQ.oeC4M45gJOINoXk4Mwm4Sc7NlbSsSUEj5PENIIv2Em4
 
 ###
 PUT {{url}}/users/100

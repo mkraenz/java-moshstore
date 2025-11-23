@@ -1,9 +1,11 @@
 package eu.kraenz.moshstore.auth;
 
+import eu.kraenz.moshstore.entities.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -36,13 +39,22 @@ public class SecurityConfig {
             c ->
                 c.requestMatchers("/carts/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/users")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/login")
+                    .requestMatchers("/admin/**")
+                    .hasRole(Role.ADMIN.name())
+                    .requestMatchers(HttpMethod.POST, "/users", "/auth/login", "/auth/refresh")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(
+            // set default error on authN errors to 401. builtin is 403.
+            // explicitly set to 403 for authZ errors
+            c -> {
+              c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+              c.accessDeniedHandler(
+                  (request, response, accessDeniedException) ->
+                      response.setStatus(HttpStatus.FORBIDDEN.value()));
+            });
     return http.build();
   }
 

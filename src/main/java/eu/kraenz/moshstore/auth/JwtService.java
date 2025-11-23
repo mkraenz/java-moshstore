@@ -1,28 +1,36 @@
 package eu.kraenz.moshstore.auth;
 
+import eu.kraenz.moshstore.entities.Role;
+import eu.kraenz.moshstore.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import java.util.Date;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
+@AllArgsConstructor
 class JwtService {
-  @Value("${spring.jwt.secret}")
-  private String signingSecret;
+  private final JwtConfig config;
 
-  public String generateToken(Long userId, String email, String name) {
-    final long tokenExpiration = 86400; // 1 day
+  public String generateAccessToken(User user) {
+    return generateToken(user, config.getAccessTokenExpiration());
+  }
+
+  public String generateRefreshToken(User user) {
+    return generateToken(user, config.getRefreshTokenExpiration());
+  }
+
+  private String generateToken(User user, long tokenExpirationInSeconds) {
     return Jwts.builder()
-        .subject(String.valueOf(userId))
-        .claim("email", email)
-        .claim("name", name)
+        .subject(String.valueOf(user.getId()))
+        .claim("email", user.getEmail())
+        .claim("name", user.getName())
+        .claim("role", user.getRole())
         .issuedAt(new Date())
-        .expiration(new Date(System.currentTimeMillis() + tokenExpiration * 1000))
-        .signWith(Keys.hmacShaKeyFor(signingSecret.getBytes()))
+        .expiration(new Date(System.currentTimeMillis() + tokenExpirationInSeconds * 1000))
+        .signWith(config.getSecretKey())
         .compact();
   }
 
@@ -38,7 +46,7 @@ class JwtService {
 
   private Claims parseClaims(String token) {
     return Jwts.parser()
-        .verifyWith(Keys.hmacShaKeyFor(signingSecret.getBytes()))
+        .verifyWith(config.getSecretKey())
         .build()
         .parseSignedClaims(token)
         .getPayload();
@@ -46,5 +54,9 @@ class JwtService {
 
   public Long getUserId(String token) {
     return Long.valueOf(parseClaims(token).getSubject());
+  }
+
+  public Role getRole(String token) {
+    return Role.valueOf(parseClaims(token).get("role", String.class));
   }
 }
