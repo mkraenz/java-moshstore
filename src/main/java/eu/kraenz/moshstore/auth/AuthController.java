@@ -4,24 +4,35 @@ import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 class AuthController {
-  private final AuthService authService;
+  private final AuthenticationManager authManager;
+  private final JwtService jwtService;
 
   @PostMapping("/login")
-  public ResponseEntity<Void> logIn(@Valid @RequestBody LoginDto inputDto) {
-    authService.logIn(inputDto.getEmail(), inputDto.getPassword());
-    return ResponseEntity.ok().build();
+  public ResponseEntity<JwtResponseDto> logIn(@Valid @RequestBody LoginDto inputDto) {
+    authManager.authenticate(
+        new UsernamePasswordAuthenticationToken(inputDto.getEmail(), inputDto.getPassword()));
+    var token = jwtService.generateToken(inputDto.getEmail());
+    return ResponseEntity.ok(new JwtResponseDto(token));
   }
 
-  @ExceptionHandler(InvalidCredentials.class)
-  public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentials e) {
+  @PostMapping("/validate")
+  public boolean validate(@RequestHeader("Authorization") String authHeader) {
+    var token = authHeader.replace("Bearer ", "");
+    return jwtService.isValid(token);
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<Map<String, String>> handleInvalidCredentials() {
     return CustomHttpResponse.invalidCredentials();
   }
 }

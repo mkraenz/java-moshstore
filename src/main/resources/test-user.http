@@ -47,6 +47,10 @@ Content-Type: application/json
 }
 
 ###
+POST {{url}}/auth/validate
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTIzLTEwMThAZXhhbXBsZS5jb20iLCJpYXQiOjE3NjM5MDQ0NjEsImV4cCI6MTc2Mzk5MDg2MX0.-JyFs_GPMom92lQzd7pt78V1HhTpiR4HDkAR7mJga6I
+
+###
 PUT {{url}}/users/100
 Content-Type: application/json
 
