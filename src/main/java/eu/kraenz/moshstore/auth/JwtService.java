@@ -14,12 +14,12 @@ class JwtService {
   @Value("${spring.jwt.secret}")
   private String signingSecret;
 
-  public String generateToken(String email) {
+  public String generateToken(Long userId, String email, String name) {
     final long tokenExpiration = 86400; // 1 day
-
-    System.out.println(signingSecret);
     return Jwts.builder()
-        .subject(email)
+        .subject(String.valueOf(userId))
+        .claim("email", email)
+        .claim("name", name)
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + tokenExpiration * 1000))
         .signWith(Keys.hmacShaKeyFor(signingSecret.getBytes()))
@@ -44,7 +44,7 @@ class JwtService {
         .getPayload();
   }
 
-  public String getEmail(String token) {
-    return parseClaims(token).getSubject();
+  public Long getUserId(String token) {
+    return Long.valueOf(parseClaims(token).getSubject());
   }
 }
