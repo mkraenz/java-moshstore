@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = LowecaseValidator.class)
+@Constraint(validatedBy = LowercaseValidator.class)
 public @interface Lowercase {
   String message() default "must be lowercase.";
 

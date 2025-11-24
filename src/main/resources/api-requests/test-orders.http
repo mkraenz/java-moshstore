@@ -1,0 +1,34 @@
+@url = http://localhost:8080
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNSIsImVtYWlsIjoiMTEyNC0xNDA1QGV4YW1wbGUuY29tIiwibmFtZSI6ImFzZCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYzOTg5NTU2LCJleHAiOjE3NjQwMTk1NTZ9.-EotAnPLklouJ33F0Dgw8GxZKyPnw7VuqCFtrD7NLHQ
+@authToken = Bearer {{jwt}}
+
+###
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "1123-1716@example.com",
+  "password": "pw1234"
+}
+
+###
+GET {{url}}/auth/me
+Authorization: {{authToken}}
+
+
+###
+POST {{url}}/checkout
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "cartId": "48c2341e-fecc-42cb-bb4a-94b89cf406a5"
+}
+
+###
+GET {{url}}/orders
+Authorization: {{authToken}}
+
+###
+GET {{url}}/orders/5
+Authorization: {{authToken}}

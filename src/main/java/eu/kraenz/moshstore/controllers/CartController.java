@@ -1,9 +1,6 @@
 package eu.kraenz.moshstore.controllers;
 
-import eu.kraenz.moshstore.dtos.AddProductToCartDto;
-import eu.kraenz.moshstore.dtos.CartDto;
-import eu.kraenz.moshstore.dtos.CartItemDto;
-import eu.kraenz.moshstore.dtos.UpdateCartItem;
+import eu.kraenz.moshstore.dtos.*;
 import eu.kraenz.moshstore.exceptions.CartItemNotFound;
 import eu.kraenz.moshstore.exceptions.CartNotFound;
 import eu.kraenz.moshstore.exceptions.ProductNotFound;
@@ -11,7 +8,7 @@ import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Map;
@@ -29,6 +26,8 @@ public class CartController {
   private final CartService cartService;
 
   @GetMapping("/{id}")
+  @Operation(summary = "Retrieve a cart")
+  @ApiResponse(responseCode = "200", description = "Success.")
   public ResponseEntity<CartDto> findOne(@PathVariable("id") UUID id) {
     var cart = cartService.findOne(id);
     return ResponseEntity.ok(cart);
@@ -78,12 +77,12 @@ public class CartController {
   }
 
   @ExceptionHandler(CartNotFound.class)
-  public ResponseEntity<Map<String, String>> handleCartNotFound() {
-    return CustomHttpResponse.resourceNotFound("Cart");
+  public ResponseEntity<ErrorResponseDto> handleCartNotFound() {
+    return CustomHttpResponse.resourceNotFound("cart");
   }
 
   @ExceptionHandler(CartItemNotFound.class)
-  public ResponseEntity<Map<String, String>> handleCartItemNotFound() {
-    return CustomHttpResponse.resourceNotFound("Cart item");
+  public ResponseEntity<ErrorResponseDto> handleCartItemNotFound() {
+    return CustomHttpResponse.resourceNotFound("cart item");
   }
 }

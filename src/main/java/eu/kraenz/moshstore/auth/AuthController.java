@@ -1,5 +1,6 @@
 package eu.kraenz.moshstore.auth;
 
+import eu.kraenz.moshstore.dtos.ErrorResponseDto;
 import eu.kraenz.moshstore.dtos.UserDto;
 import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.mappers.UserMapper;
@@ -7,14 +8,12 @@ import eu.kraenz.moshstore.repositories.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -26,6 +25,7 @@ class AuthController {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final JwtConfig jwtConfig;
+  private final AuthService authService;
 
   @PostMapping("/login")
   public ResponseEntity<JwtResponseDto> logIn(
@@ -72,9 +72,7 @@ class AuthController {
 
   @GetMapping("/me")
   public ResponseEntity<UserDto> me() {
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    var id = (Long) authentication.getPrincipal();
-    var user = userRepository.findById(id).orElse(null);
+    var user = userRepository.findById(authService.currentUserId()).orElse(null);
     if (user == null) {
       return ResponseEntity.notFound().build();
     }
@@ -83,7 +81,7 @@ class AuthController {
   }
 
   @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<Map<String, String>> handleInvalidCredentials() {
+  public ResponseEntity<ErrorResponseDto> handleInvalidCredentials() {
     return CustomHttpResponse.invalidCredentials();
   }
 }

@@ -1,23 +1,22 @@
 package eu.kraenz.moshstore.controllers;
 
-import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import eu.kraenz.moshstore.entities.Category;
 import eu.kraenz.moshstore.entities.Product;
 import eu.kraenz.moshstore.entities.User;
 import eu.kraenz.moshstore.repositories.CategoryRepository;
 import eu.kraenz.moshstore.repositories.ProductRepository;
 import eu.kraenz.moshstore.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.StreamSupport;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.Yaml;
 
 // TODO remove this controller. only for dev
 
@@ -32,6 +31,7 @@ class DevController {
   private final PasswordEncoder passwordEncoder;
 
   @GetMapping("/seed")
+  @Operation(hidden = true)
   @Transactional
   public String seedDatabase() {
     var yaml = new Yaml();

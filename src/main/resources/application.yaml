@@ -17,3 +17,4 @@ springdoc:
   swagger-ui:
     # open at http://localhost:8080/docs
     path: /docs
+  default-produces-media-type: application/json

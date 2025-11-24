@@ -50,4 +50,8 @@ public class Cart {
   public void removeItem(CartItem item) {
     items.remove(item);
   }
+
+  public boolean isEmpty() {
+    return items.isEmpty();
+  }
 }
