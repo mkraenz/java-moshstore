@@ -51,4 +51,8 @@ public abstract class CustomHttpResponse {
             .build();
     return ResponseEntity.status(error).body(body);
   }
+
+  public static ResponseEntity<ErrorResponseDto> pleaseTryAgain() {
+    return toDto(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again.");
+  }
 }

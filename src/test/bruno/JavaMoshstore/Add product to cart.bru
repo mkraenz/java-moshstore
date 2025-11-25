@@ -1,0 +1,26 @@
+meta {
+  name: Add product to cart
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/carts/{{cartId}}/items
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productId": 5
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,4 +1,6 @@
 spring:
+  main:
+    banner-mode: off
   application:
     name: moshstore
   datasource:
@@ -17,4 +19,12 @@ springdoc:
   swagger-ui:
     # open at http://localhost:8080/docs
     path: /docs
+    enabled: true
+  api-docs:
+    enabled: true
   default-produces-media-type: application/json
+
+payment:
+  stripe:
+    secretKey: ${STRIPE_SECRET_KEY}
+websiteUrl: http://localhost:3000

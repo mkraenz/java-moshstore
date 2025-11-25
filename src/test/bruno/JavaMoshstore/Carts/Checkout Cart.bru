@@ -1,0 +1,26 @@
+meta {
+  name: Checkout Cart
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/checkout
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "cartId": "{{cartId}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

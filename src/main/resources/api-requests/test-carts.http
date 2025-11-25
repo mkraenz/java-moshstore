@@ -1,10 +1,11 @@
 @url = http://localhost:8080
+@cartId = 48c2341e-fecc-42cb-bb4a-94b89cf406a5
 
 ###
 POST {{url}}/carts
 
 ###
-POST {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items
+POST {{url}}/carts/{{cartId}}/items
 Content-Type: application/json
 
 {
@@ -12,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-PUT {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/2
+PUT {{url}}/carts/{{cartId}}/items/2
 Content-Type: application/json
 
 {
@@ -21,11 +22,11 @@ Content-Type: application/json
 
 
 ###
-GET {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5
+GET {{url}}/carts/{{cartId}}
 
 ###
-DELETE {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items/2
+DELETE {{url}}/carts/{{cartId}}/items/2
 
 ###
 
-DELETE {{url}}/carts/48c2341e-fecc-42cb-bb4a-94b89cf406a5/items
+DELETE {{url}}/carts/{{cartId}}/items

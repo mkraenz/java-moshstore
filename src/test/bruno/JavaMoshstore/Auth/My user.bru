@@ -1,0 +1,16 @@
+meta {
+  name: My user
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/auth/me
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

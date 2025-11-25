@@ -1,0 +1,20 @@
+meta {
+  name: Create Cart
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/carts
+  body: none
+  auth: inherit
+}
+
+vars:post-response {
+  cartId: res('id')
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

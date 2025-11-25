@@ -6,5 +6,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class CheckoutResponseDto {
-  public Long orderId;
+  private Long orderId;
+  private String checkoutUrl;
 }

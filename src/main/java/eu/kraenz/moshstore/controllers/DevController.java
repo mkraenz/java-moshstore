@@ -7,7 +7,6 @@ import eu.kraenz.moshstore.repositories.CategoryRepository;
 import eu.kraenz.moshstore.repositories.ProductRepository;
 import eu.kraenz.moshstore.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.transaction.Transactional;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
 
