@@ -1,10 +1,10 @@
 package eu.kraenz.moshstore.auth;
 
-import eu.kraenz.moshstore.dtos.ErrorResponseDto;
-import eu.kraenz.moshstore.dtos.UserDto;
-import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
-import eu.kraenz.moshstore.mappers.UserMapper;
-import eu.kraenz.moshstore.repositories.UserRepository;
+import eu.kraenz.moshstore.app.ErrorResponseDto;
+import eu.kraenz.moshstore.users.UserDto;
+import eu.kraenz.moshstore.common.httpErrors.CustomHttpResponse;
+import eu.kraenz.moshstore.users.UserMapper;
+import eu.kraenz.moshstore.users.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

@@ -1,7 +1,7 @@
 package eu.kraenz.moshstore.auth;
 
 import eu.kraenz.moshstore.entities.User;
-import eu.kraenz.moshstore.repositories.UserRepository;
+import eu.kraenz.moshstore.users.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

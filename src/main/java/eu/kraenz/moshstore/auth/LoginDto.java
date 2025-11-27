@@ -1,6 +1,6 @@
 package eu.kraenz.moshstore.auth;
 
-import eu.kraenz.moshstore.validation.Lowercase;
+import eu.kraenz.moshstore.common.validation.Lowercase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -1,8 +1,8 @@
 package eu.kraenz.moshstore.orders;
 
 import eu.kraenz.moshstore.auth.AuthService;
-import eu.kraenz.moshstore.dtos.ErrorResponseDto;
-import eu.kraenz.moshstore.httpErrors.CustomHttpResponse;
+import eu.kraenz.moshstore.app.ErrorResponseDto;
+import eu.kraenz.moshstore.common.httpErrors.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

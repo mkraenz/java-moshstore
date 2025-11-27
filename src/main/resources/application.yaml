@@ -3,17 +3,12 @@ spring:
     banner-mode: off
   application:
     name: moshstore
-  datasource:
-    url: jdbc:mysql://172.17.0.1:3306/moshstore?createDatabaseIfNotExist=true
-    username: root
-    password: pass
-  jpa:
-    show-sql: true
   jwt:
     secret: ${JWT_SECRET}
-    #    accessTokenExpiration: 300
-    accessTokenExpiration: 30000 # for dev
+    accessTokenExpiration: 900
     refresh-token-expiration: 604800
+  profiles:
+    active: dev
 
 springdoc:
   swagger-ui:
@@ -28,4 +23,3 @@ payment:
   stripe:
     secretKey: ${STRIPE_SECRET_KEY}
     webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
-websiteUrl: http://localhost:3000
