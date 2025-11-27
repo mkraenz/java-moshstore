@@ -1,6 +1,6 @@
 package eu.kraenz.moshstore.entities;
 
-public enum OrderStatus {
+public enum PaymentStatus {
   PENDING,
   PAID,
   FAILED,

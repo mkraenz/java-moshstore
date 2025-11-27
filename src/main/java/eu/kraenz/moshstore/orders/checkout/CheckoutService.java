@@ -1,19 +1,19 @@
 package eu.kraenz.moshstore.orders.checkout;
 
-import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
+import com.stripe.net.Webhook;
 import eu.kraenz.moshstore.auth.AuthService;
 import eu.kraenz.moshstore.entities.Order;
+import eu.kraenz.moshstore.entities.PaymentStatus;
 import eu.kraenz.moshstore.exceptions.CartNotFound;
 import eu.kraenz.moshstore.orders.OrderRepository;
 import eu.kraenz.moshstore.repositories.CartRepository;
-
-import java.math.BigDecimal;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +23,14 @@ class CheckoutService {
   private final CartRepository cartRepository;
   private final OrderRepository orderRepository;
   private final AuthService authService;
+  private final PaymentGateway paymentGateway;
 
   @Value("${websiteUrl}")
   private String websiteUrl;
 
   @Transactional
   public CheckoutResponseDto handleCheckout(CheckoutDto inputDto)
-      throws CannotCheckOutEmptyCart, CartNotFound, StripeException {
+      throws CannotCheckOutEmptyCart, CartNotFound, PaymentException {
     var cart =
         cartRepository
             .findById(UUID.fromString(inputDto.getCartId()))
@@ -41,46 +42,24 @@ class CheckoutService {
     orderRepository.save(order);
 
     try {
-      var session = createStripeSession(order);
+      var session = paymentGateway.createCheckoutSession(order, websiteUrl);
       cart.clear();
       cartRepository.save(cart);
-      CheckoutResponseDto dto = new CheckoutResponseDto(order.getId(), session.getUrl());
-      return dto;
-    } catch (StripeException e) {
+      return new CheckoutResponseDto(order.getId(), session.getRedirectUrl());
+    } catch (PaymentException e) {
       orderRepository.delete(order);
       throw e;
     }
   }
 
-  private Session createStripeSession(Order order) throws StripeException {
-    final String currency = "eur";
-    final int euroToCents = 100;
-    var paramBuilder =
-        SessionCreateParams.builder()
-            .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl(websiteUrl + "/checkout-success.html?orderId=" + order.getId())
-            .setCancelUrl(websiteUrl + "/checkout-cancel");
-
-    var lineItems =
-        order.getItems().stream()
-            .map(
-                item ->
-                    SessionCreateParams.LineItem.builder()
-                        .setQuantity(Long.valueOf(item.getQuantity()))
-                        .setPriceData(
-                            SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency(currency)
-                                .setUnitAmountDecimal(
-                                    item.getUnitPrice().multiply(BigDecimal.valueOf(euroToCents)))
-                                .setProductData(
-                                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                        .setName(item.getProduct().getName())
-                                        .build())
-                                .build())
-                        .build())
-            .toList();
-    paramBuilder.addAllLineItem(lineItems);
-    var session = Session.create(paramBuilder.build());
-    return session;
+  public void handleWebhookEvent(WebhookRequest request) {
+    paymentGateway
+        .parseWebhookRequest(request)
+        .ifPresent(
+            result -> {
+              var order = orderRepository.findById(result.getOrderId()).orElseThrow();
+              order.setStatus(result.getPaymentStatus());
+              orderRepository.save(order);
+            });
   }
 }

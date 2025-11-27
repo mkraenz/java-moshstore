@@ -42,7 +42,12 @@ public class SecurityConfig {
                     .requestMatchers("/admin/**")
                     .hasRole(Role.ADMIN.name())
                     .requestMatchers(
-                        HttpMethod.POST, "/users", "/auth/login", "/auth/refresh", "/auth/logout")
+                        HttpMethod.POST,
+                        "/users",
+                        "/auth/login",
+                        "/auth/refresh",
+                        "/auth/logout",
+                        "/checkout/webhooks/stripe")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/docs", "/swagger-ui/*", "/v3/api-docs/**")
                     .permitAll()

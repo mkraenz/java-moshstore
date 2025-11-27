@@ -28,7 +28,7 @@ public class Order {
   @Column(name = "status", nullable = false, length = 20)
   @Enumerated(EnumType.STRING)
   @Builder.Default
-  private OrderStatus status = OrderStatus.PENDING;
+  private PaymentStatus status = PaymentStatus.PENDING;
 
   @ColumnDefault("CURRENT_TIMESTAMP")
   // insertable=false, updateable=false to get rid of nullability error

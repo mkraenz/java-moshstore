@@ -43,4 +43,9 @@ public class OrderItem {
   @NotNull
   @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
   private BigDecimal totalPrice;
+
+  public BigDecimal getUnitPriceInEuroCents() {
+    final int euroToCents = 100;
+    return unitPrice.multiply(BigDecimal.valueOf(euroToCents));
+  }
 }

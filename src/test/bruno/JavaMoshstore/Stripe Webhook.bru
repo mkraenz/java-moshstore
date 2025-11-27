@@ -1,0 +1,16 @@
+meta {
+  name: Stripe Webhook
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/checkout/webhooks/stripe
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
