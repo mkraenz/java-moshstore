@@ -1,4 +1,4 @@
-package eu.kraenz.moshstore.app;
+package eu.kraenz.moshstore.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;

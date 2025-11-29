@@ -1,5 +1,6 @@
 package eu.kraenz.moshstore.auth;
 
+import eu.kraenz.moshstore.common.SecurityRules;
 import eu.kraenz.moshstore.entities.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +22,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
   private final UserDetailsService userDetailsService;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final List<SecurityRules> featureSecurityRules;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,31 +40,10 @@ public class SecurityConfig {
     http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
-            c ->
-                c.requestMatchers("/carts/**")
-                    .permitAll()
-                    .requestMatchers("/admin/**")
-                    .hasRole(Role.ADMIN.name())
-                    .requestMatchers(
-                        HttpMethod.POST,
-                        "/users",
-                        "/auth/login",
-                        "/auth/refresh",
-                        "/auth/logout",
-                        "/checkout/webhooks/stripe")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/docs", "/swagger-ui/*", "/v3/api-docs/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/products/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/products/**")
-                    .hasRole(Role.ADMIN.name())
-                    .requestMatchers(HttpMethod.PUT, "/products/**")
-                    .hasRole(Role.ADMIN.name())
-                    .requestMatchers(HttpMethod.DELETE, "/products/**")
-                    .hasRole(Role.ADMIN.name())
-                    .anyRequest()
-                    .authenticated())
+            registry -> {
+              featureSecurityRules.forEach(rules -> rules.configure(registry));
+              registry.anyRequest().authenticated();
+            })
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(
             // set default error on authN errors to 401. builtin is 403.
