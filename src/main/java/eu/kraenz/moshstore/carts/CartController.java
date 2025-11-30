@@ -52,6 +52,7 @@ public class CartController {
   }
 
   @PutMapping("/{id}/items/{productId}")
+  @Operation(summary = "Update product quantity in cart.")
   public ResponseEntity<CartItemDto> updateCartItem(
       @PathVariable("id") UUID cartId,
       @PathVariable("productId") Long productId,
@@ -61,6 +62,7 @@ public class CartController {
   }
 
   @DeleteMapping("/{id}/items/{productId}")
+  @Operation(summary = "Remove a product from cart.")
   public ResponseEntity<Void> removeCartItem(
       @PathVariable("id") UUID cartId, @PathVariable("productId") Long productId) {
     cartService.removeFromCart(cartId, productId);
@@ -68,6 +70,7 @@ public class CartController {
   }
 
   @DeleteMapping("/{id}/items")
+  @Operation(summary = "Empty cart", description = "Removes all items from this cart.")
   public ResponseEntity<Void> clearCart(@PathVariable("id") UUID cartId) {
     cartService.clearCart(cartId);
     return ResponseEntity.noContent().build();

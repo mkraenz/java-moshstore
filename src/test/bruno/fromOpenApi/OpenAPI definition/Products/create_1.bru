@@ -1,0 +1,63 @@
+meta {
+  name: create_1
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/products
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "price": "",
+    "categoryId": ""
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/products
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "price": "",
+        "categoryId": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "name": "",
+          "description": "",
+          "price": "",
+          "categoryId": ""
+        }
+      '''
+    }
+  }
+}

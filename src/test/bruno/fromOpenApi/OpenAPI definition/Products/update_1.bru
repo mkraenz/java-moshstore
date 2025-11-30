@@ -1,0 +1,71 @@
+meta {
+  name: update_1
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/products/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "price": "",
+    "categoryId": ""
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/products/:id
+    method: PUT
+    mode: json
+    params:path: {
+      id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "price": "",
+        "categoryId": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "name": "",
+          "description": "",
+          "price": "",
+          "categoryId": ""
+        }
+      '''
+    }
+  }
+}

@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorResponseDto> handleUnreadableMessage() {
-    return CustomHttpResponse.badRequest("Invalid request body.");
+    return CustomHttpResponse.badRequest("Invalid request body. Not a valid JSON.");
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -26,5 +27,13 @@ public class GlobalExceptionHandler {
         .getFieldErrors()
         .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
     return CustomHttpResponse.badRequest("Validation failed.", errors);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponseDto> handleValidationErrors(
+      MethodArgumentTypeMismatchException exception) {
+    return CustomHttpResponse.badRequest(
+        "Invalid path parameter.",
+        Map.of("parameterName", exception.getParameter().getParameter().getName().toString()));
   }
 }

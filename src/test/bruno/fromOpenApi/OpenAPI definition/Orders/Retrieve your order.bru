@@ -1,0 +1,174 @@
+meta {
+  name: Retrieve your order.
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/orders/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+example {
+  name: 200 Response
+  description: Success
+  
+  request: {
+    url: {{baseUrl}}/orders/:id
+    method: GET
+    mode: none
+    params:path: {
+      id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "status": "",
+          "createdAt": "",
+          "items": [
+            {
+              "quantity": 0,
+              "totalPrice": "",
+              "product": {
+                "id": 0,
+                "name": "",
+                "price": ""
+              }
+            }
+          ],
+          "totalPrice": ""
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 400 Response
+  description: Bad Request. Check the response body for more details.
+  
+  request: {
+    url: {{baseUrl}}/orders/:id
+    method: GET
+    mode: none
+    params:path: {
+      id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "error": "",
+          "statusCode": 0,
+          "message": "",
+          "details": {}
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 401 Response
+  description: Unauthenticated.
+  
+  request: {
+    url: {{baseUrl}}/orders/:id
+    method: GET
+    mode: none
+    params:path: {
+      id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 401
+      text: Unauthorized
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "error": "",
+          "statusCode": 0,
+          "message": "",
+          "details": {}
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 404 Response
+  description: Resource not found or not owned by you.
+  
+  request: {
+    url: {{baseUrl}}/orders/:id
+    method: GET
+    mode: none
+    params:path: {
+      id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 404
+      text: Not Found
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "error": "",
+          "statusCode": 0,
+          "message": "",
+          "details": {}
+        }
+      '''
+    }
+  }
+}

@@ -10,6 +10,10 @@ get {
   auth: inherit
 }
 
+script:post-response {
+  bru.setVar('userId', res.body.id);
+}
+
 settings {
   encodeUrl: false
   timeout: 0

@@ -1,16 +1,15 @@
 meta {
-  name: Docs
+  name: Get a user
   type: http
-  seq: NaN
+  seq: 2
 }
 
 get {
-  url: {{url}}/docs
+  url: {{url}}/users/{{userId}}
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

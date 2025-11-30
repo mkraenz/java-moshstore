@@ -16,10 +16,14 @@ headers {
 
 body:json {
   {
-    "email": "1124-1405@example.com",
+    "email": "{{email}}",
     "name": "asd",
     "password": "pw1234"
   }
+}
+
+script:post-response {
+  bru.setVar('userId', res.body.id);
 }
 
 settings {

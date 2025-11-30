@@ -1,44 +1,32 @@
 package eu.kraenz.moshstore.auth;
 
 import eu.kraenz.moshstore.app.ErrorResponseDto;
-import eu.kraenz.moshstore.users.UserDto;
 import eu.kraenz.moshstore.common.httpErrors.CustomHttpResponse;
+import eu.kraenz.moshstore.users.UserDto;
 import eu.kraenz.moshstore.users.UserMapper;
-import eu.kraenz.moshstore.users.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth")
 class AuthController {
-  private final AuthenticationManager authManager;
-  private final JwtService jwtService;
-  private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final JwtConfig jwtConfig;
   private final AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponseDto> logIn(
-      @Valid @RequestBody LoginDto inputDto, HttpServletResponse response) {
-    authManager.authenticate(
-        new UsernamePasswordAuthenticationToken(inputDto.getEmail(), inputDto.getPassword()));
-    var user = userRepository.findByEmail(inputDto.getEmail()).orElseThrow();
-    var token = jwtService.generateAccessToken(user);
-    var refreshToken = jwtService.generateRefreshToken(user);
-
-    response.addCookie(createRefreshTokenCookie(refreshToken.toString()));
-
-    return ResponseEntity.ok(new JwtResponseDto(token.toString()));
+  public JwtResponseDto logIn(@Valid @RequestBody LoginDto inputDto, HttpServletResponse response) {
+    var tokens = authService.logIn(inputDto.getEmail(), inputDto.getPassword());
+    response.addCookie(createRefreshTokenCookie(tokens.refreshToken.toString()));
+    return new JwtResponseDto(tokens.accessToken.toString());
   }
 
   private Cookie createRefreshTokenCookie(String refreshToken) {
@@ -51,19 +39,12 @@ class AuthController {
   }
 
   @PostMapping("/refresh")
-  private ResponseEntity<JwtResponseDto> refreshAccessToken(
-      @CookieValue("refreshToken") String refreshToken) {
-    var jwt = jwtService.parse(refreshToken);
-    if (jwt == null || !jwt.isValid()) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-    var user = userRepository.findById(jwt.getUserId()).orElseThrow();
-    var accessToken = jwtService.generateAccessToken(user);
-    return ResponseEntity.ok(new JwtResponseDto(accessToken.toString()));
+  public JwtResponseDto refreshAccessToken(@CookieValue("refreshToken") String refreshToken) {
+    return authService.refreshAccessToken(refreshToken);
   }
 
   @PostMapping("/logout")
-  private ResponseEntity<Void> logOut(HttpServletResponse response) {
+  public ResponseEntity<Void> logOut(HttpServletResponse response) {
     var cookie = createRefreshTokenCookie("irrelevant");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
@@ -71,17 +52,18 @@ class AuthController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<UserDto> me() {
-    var user = userRepository.findById(authService.currentUserId()).orElse(null);
-    if (user == null) {
-      return ResponseEntity.notFound().build();
-    }
-    var dto = userMapper.toDto(user);
-    return ResponseEntity.ok(dto);
+  public UserDto me() {
+    var user = authService.findCurrentUser();
+    return userMapper.toDto(user);
   }
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ErrorResponseDto> handleInvalidCredentials() {
     return CustomHttpResponse.invalidCredentials();
+  }
+
+  @ExceptionHandler(InvalidJwt.class)
+  public ResponseEntity<ErrorResponseDto> handleInvalidToken() {
+    return CustomHttpResponse.unauthorized("Invalid token");
   }
 }

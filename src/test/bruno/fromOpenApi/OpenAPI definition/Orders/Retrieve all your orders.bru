@@ -1,0 +1,126 @@
+meta {
+  name: Retrieve all your orders.
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/orders
+  body: none
+  auth: inherit
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/orders
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "id": 0,
+            "status": "",
+            "createdAt": "",
+            "items": [
+              {
+                "quantity": 0,
+                "totalPrice": "",
+                "product": {
+                  "id": 0,
+                  "name": "",
+                  "price": ""
+                }
+              }
+            ],
+            "totalPrice": ""
+          }
+        ]
+      '''
+    }
+  }
+}
+
+example {
+  name: 400 Response
+  description: Bad Request. Check the response body for more details.
+  
+  request: {
+    url: {{baseUrl}}/orders
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "error": "",
+          "statusCode": 0,
+          "message": "",
+          "details": {}
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 401 Response
+  description: Unauthenticated.
+  
+  request: {
+    url: {{baseUrl}}/orders
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 401
+      text: Unauthorized
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "error": "",
+          "statusCode": 0,
+          "message": "",
+          "details": {}
+        }
+      '''
+    }
+  }
+}

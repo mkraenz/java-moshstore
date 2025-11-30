@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/checkout")
 @AllArgsConstructor
-@Tag(name = "Orders")
+@Tag(name = "Carts")
 @ApiResponses(
     value = {
       @ApiResponse(

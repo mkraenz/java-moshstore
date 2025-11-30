@@ -1,0 +1,69 @@
+meta {
+  name: Update product quantity in cart.
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/carts/:id/items/:productId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 
+  productId: 
+}
+
+body:json {
+  {
+    "quantity": 0
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/carts/:id/items/:productId
+    method: PUT
+    mode: json
+    params:path: {
+      id: 
+      productId: 
+    }
+  
+    body:json: {
+      {
+        "quantity": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "product": {
+            "id": 0,
+            "name": "",
+            "price": ""
+          },
+          "quantity": 0,
+          "totalPrice": ""
+        }
+      '''
+    }
+  }
+}

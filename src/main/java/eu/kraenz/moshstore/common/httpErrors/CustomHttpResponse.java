@@ -36,6 +36,10 @@ public abstract class CustomHttpResponse {
     return toDto(HttpStatus.BAD_REQUEST, message, details);
   }
 
+  public static ResponseEntity<ErrorResponseDto> forbidden(String message) {
+    return toDto(HttpStatus.FORBIDDEN, message);
+  }
+
   private static ResponseEntity<ErrorResponseDto> toDto(HttpStatus error, String message) {
     return toDto(error, message, null);
   }
@@ -54,5 +58,13 @@ public abstract class CustomHttpResponse {
 
   public static ResponseEntity<ErrorResponseDto> pleaseTryAgain() {
     return toDto(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again.");
+  }
+
+  public static ResponseEntity<ErrorResponseDto> unauthorized(String message) {
+    return toDto(HttpStatus.UNAUTHORIZED, message);
+  }
+
+  public static ResponseEntity<ErrorResponseDto> unprocessableEntity(String message) {
+    return toDto(HttpStatus.UNPROCESSABLE_ENTITY, message);
   }
 }

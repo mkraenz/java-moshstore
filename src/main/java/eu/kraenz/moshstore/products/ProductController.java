@@ -1,5 +1,6 @@
 package eu.kraenz.moshstore.products;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/products")
+@Tag(name = "Products")
 class ProductController {
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;

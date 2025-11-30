@@ -1,0 +1,61 @@
+meta {
+  name: Retrieve a cart
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/carts/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+example {
+  name: 200 Response
+  description: Success.
+  
+  request: {
+    url: {{baseUrl}}/carts/:id
+    method: GET
+    mode: none
+    params:path: {
+      id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": "",
+          "items": [
+            {
+              "product": {
+                "id": 0,
+                "name": "",
+                "price": ""
+              },
+              "quantity": 0,
+              "totalPrice": ""
+            }
+          ],
+          "totalPrice": ""
+        }
+      '''
+    }
+  }
+}
