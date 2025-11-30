@@ -4,6 +4,7 @@ import eu.kraenz.moshstore.app.ErrorResponseDto;
 import eu.kraenz.moshstore.common.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.users.UserDto;
 import eu.kraenz.moshstore.users.UserMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,12 @@ class AuthController {
   private final AuthService authService;
 
   @PostMapping("/login")
+  @Operation(
+      summary = "Log In",
+      description =
+          "Log in and retrieve an access token for authentication via Authorization header, "
+              + "and a refresh token as a cookie to renew access tokens without having to log in again. "
+              + "For refreshing access tokens, see POST /auth/refresh")
   public JwtResponseDto logIn(@Valid @RequestBody LoginDto inputDto, HttpServletResponse response) {
     var tokens = authService.logIn(inputDto.getEmail(), inputDto.getPassword());
     response.addCookie(createRefreshTokenCookie(tokens.refreshToken.toString()));
@@ -39,11 +46,16 @@ class AuthController {
   }
 
   @PostMapping("/refresh")
+  @Operation(
+      summary = "Refresh access token",
+      description =
+          "Uses the refresh token cookie to renew an access token without having to log in again.")
   public JwtResponseDto refreshAccessToken(@CookieValue("refreshToken") String refreshToken) {
     return authService.refreshAccessToken(refreshToken);
   }
 
   @PostMapping("/logout")
+  @Operation(summary = "Log out", description = "Clears the refresh token cookie.")
   public ResponseEntity<Void> logOut(HttpServletResponse response) {
     var cookie = createRefreshTokenCookie("irrelevant");
     cookie.setMaxAge(0);
@@ -52,6 +64,10 @@ class AuthController {
   }
 
   @GetMapping("/me")
+  @Operation(
+      summary = "Retrieve your user",
+      description =
+          "Retrieves your user account information. Use this to verify you are successfully logged in.")
   public UserDto me() {
     var user = authService.findCurrentUser();
     return userMapper.toDto(user);

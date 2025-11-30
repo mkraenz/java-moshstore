@@ -4,6 +4,7 @@ import eu.kraenz.moshstore.app.ErrorResponseDto;
 import eu.kraenz.moshstore.auth.AuthService;
 import eu.kraenz.moshstore.common.httpErrors.CustomHttpResponse;
 import eu.kraenz.moshstore.entities.Role;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/users")
-@Tag(name = "Users", description = "Manage your user account.")
+@Tag(name = "Users", description = "Manage user accounts.")
 public class UserController {
   private final AuthService authService;
   private final UserService userService;
 
   @GetMapping
+  @Operation(summary = "Admin: List users", description = "Only callable by administrators.")
   public Iterable<UserDto> findAll(
       @RequestParam(required = false, name = "sort", defaultValue = "") String sortRaw) {
     // admin endpoint hence no further authZ
@@ -30,12 +32,14 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Admin: Get a user", description = "Only callable by administrators.")
   public UserDto findOne(@PathVariable Long id) {
     // admin endpoint hence no further authZ
     return userService.findOne(id);
   }
 
   @PostMapping
+  @Operation(summary = "Register a user account")
   public ResponseEntity<?> create(
       @Valid @RequestBody CreateUserDto data, UriComponentsBuilder uriBuilder) {
     var dto = userService.create(data);
@@ -44,12 +48,20 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
+  @Operation(
+      summary = "Update user",
+      description =
+          "Customize several user account properties. Atomic operation: "
+              + "All properties must be provided and will be overwritten.")
   public UserDto update(@PathVariable(name = "id") Long id, @RequestBody UpdateUserDto data) {
     if (id != authService.currentUserId()) throw new UserNotFound();
     return userService.update(id, data);
   }
 
   @DeleteMapping("/{id}")
+  @Operation(
+      summary = "Delete user",
+      description = "Deletes a user. You can only delete your own user.")
   public ResponseEntity delete(@PathVariable(name = "id") long id) {
     if (id != authService.currentUserId()) throw new UserNotFound();
     userService.delete(id);
@@ -57,6 +69,7 @@ public class UserController {
   }
 
   @PostMapping("/{id}/change-password")
+  @Operation(summary = "Change password")
   public ResponseEntity<?> changePassword(
       @PathVariable(name = "id") long id, @RequestBody ChangePasswordDto data) {
     try {

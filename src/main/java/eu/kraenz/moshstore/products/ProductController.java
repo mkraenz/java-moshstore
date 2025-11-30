@@ -1,5 +1,6 @@
 package eu.kraenz.moshstore.products;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ class ProductController {
   private final CategoryRepository categoryRepository;
 
   @GetMapping
+  @Operation(summary = "List products")
   public Iterable<ProductDto> findMany(
       @RequestParam(name = "categoryId", required = false) Byte categoryId) {
     var products =
@@ -26,6 +28,7 @@ class ProductController {
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Retrieve a product")
   public ResponseEntity<ProductDto> findOne(@PathVariable long id) {
     var product = productRepository.findById(id).orElse(null);
     if (product == null) {
@@ -35,6 +38,7 @@ class ProductController {
   }
 
   @PostMapping
+  @Operation(summary = "Admin: Create product", description = "Only callable by administrators.")
   public ResponseEntity<ProductDto> create(
       @RequestBody CreateProductDto createDto, UriComponentsBuilder uriBuilder) {
     var category = categoryRepository.findById(createDto.getCategoryId()).orElse(null);
@@ -49,6 +53,7 @@ class ProductController {
   }
 
   @PutMapping("/{id}")
+  @Operation(summary = "Admin: Update product", description = "Only callable by administrators.")
   public ResponseEntity<ProductDto> update(
       @PathVariable(name = "id") Long id, @RequestBody UpdateProductDto updateDto) {
     var product = productRepository.findById(id).orElse(null);
@@ -66,6 +71,7 @@ class ProductController {
   }
 
   @DeleteMapping("/{id}")
+  @Operation(summary = "Admin: Delete product", description = "Only callable by administrators.")
   public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
     var product = productRepository.findById(id).orElse(null);
     if (product == null) {
